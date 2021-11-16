@@ -121,13 +121,26 @@ public abstract class AbstractModel {
      */
     protected abstract void solve(int k, int alpha);
 
+    /**
+     * prepare to solve, start timing
+     * @param dataName name of input
+     * @param k number of partitions
+     * @param alpha bound of different of each partition
+     */
+    protected void run(String dataName, int k, int alpha){
+        System.out.printf("Start Solving %s with k=%d, alpha=%d",dataName,k,alpha);
+        this.timeElapse = System.currentTimeMillis();
+        this.solve(k,alpha);
+        this.timeElapse = System.currentTimeMillis()- this.timeElapse;
+    }
+
 
     private static final String inputFolder ="data/input/";
     private static final String outputFolder="data/output/";
     private static final String logFolder="data/log/";
 
     public static void createLogFile(String filename) throws FileNotFoundException {
-        PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename)));
+        PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename,true)));
         // columns: data, k, alpha, run idx, result, time, status
         printWriter.printf("data,k,alpha,run idx, result,time, status");
         printWriter.close();
@@ -157,17 +170,14 @@ public abstract class AbstractModel {
 
 
         File dir = new File(inputDir.toString());
-        System.out.println("Data in "+dir);
-        for (File f : dir.listFiles()) {
-            System.out.println(f.toString());
+
+        try {
+            logFileName.append(".csv");
+            createLogFile(logFileName.toString());
+        }catch (FileNotFoundException fileNotFoundException){
+            System.out.printf("Program stopped because log file %s cannot be created\n%n",logFileName);
+            return;
         }
-//        try {
-//            logFileName.append(".csv");
-//            createLogFile(logFileName.toString());
-//        }catch (FileNotFoundException fileNotFoundException){
-//            System.out.printf("Program stopped because log file %s cannot be created\n%n",logFileName);
-//            return;
-//        }
 
         for (File f : Objects.requireNonNull(dir.listFiles())) {
 //			File[] files = {new File("data/uniform/W100-H020/NS0050-A0060.txt")};
@@ -185,10 +195,9 @@ public abstract class AbstractModel {
                         for (int alpha: alphaArray) {
                             for (int i = 0; i < nRun; ++i) {
 //                                model.setNRun(i+1);
-                                model.solve(k,alpha);
-                                model.writeResult(outputFileName.toString(),k,alpha,i,delimiter);
-                                delimiter=",";
+                                model.run(dataName,k,alpha);
 
+                                model.writeResult(outputFileName.toString(),k,alpha,i,delimiter); delimiter=",";
                                 model.writeLog(logFileName.toString(),dataName,k,alpha,i);
                             }
                         }

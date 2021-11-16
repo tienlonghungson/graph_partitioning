@@ -1,19 +1,18 @@
 package model.integerprogramming;
 
+import com.google.ortools.linearsolver.MPConstraint;
+import com.google.ortools.linearsolver.MPObjective;
+import com.google.ortools.linearsolver.MPSolver;
+import com.google.ortools.linearsolver.MPVariable;
 import model.AbstractModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.ortools.linearsolver.MPConstraint;
-import com.google.ortools.linearsolver.MPObjective;
-import com.google.ortools.linearsolver.MPSolver;
-import com.google.ortools.linearsolver.MPVariable;
+public class ReducedIPModel extends AbstractModel {
 
-public class IPModel extends AbstractModel {
-
-    public IPModel(){
-        this.modelName = "IPSolver";
+    public ReducedIPModel(){
+        this.modelName = "ReducedIPSolver";
     }
 
     @Override
@@ -55,8 +54,8 @@ public class IPModel extends AbstractModel {
         }
 
         // constraint (3): the consistency of x(i,j)
-        for (int i=0;i<numVertices;i++){
-            for (int j=0;j<numVertices;j++){
+        for (int i=0;i<numVertices-1;i++){
+            for (int j=i+1;j<numVertices;j++){
                 for(int l=numVertices;l<numVar1Dim;l++){
                     MPConstraint mpConstraint3 = solver.makeConstraint(-1,1,"consistent: "+i+"-"+j);
                     mpConstraint3.setCoefficient(x[i][j],1);
@@ -73,8 +72,8 @@ public class IPModel extends AbstractModel {
 
         // set up objective and calculate total weight of the graph at the same time
         MPObjective objective = solver.objective(); double sumWeight=0;
-        for (int i=0;i<numVertices;++i){
-            for (int j=0;j<numVertices;++j){
+        for (int i=0;i<numVertices-1;++i){
+            for (int j=i+1;j<numVertices;++j){
                 objective.setCoefficient(x[i][j],weightedMatrix.get(i).get(j));
                 sumWeight += weightedMatrix.get(i).get(j);
             }
@@ -100,7 +99,6 @@ public class IPModel extends AbstractModel {
                 }
                 this.partitionList.add(part);
             }
-
         }
     }
 }
