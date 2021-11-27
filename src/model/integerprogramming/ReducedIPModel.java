@@ -26,6 +26,7 @@ public class ReducedIPModel extends AbstractModel {
             System.out.println("Could not create solver SCIP");
             return;
         }
+        solver.setTimeLimit(TIME_LIMIT*60000);
 
         MPVariable[][] x = new MPVariable[numVertices][numVar1Dim];
         for (int i=0;i<numVertices;++i){
@@ -87,7 +88,7 @@ public class ReducedIPModel extends AbstractModel {
 
             this.weighted = (sumWeight- objective.value())/2;
 
-            this.partitionList = new ArrayList<>(k);
+            this.bestPartitions = new ArrayList<>(k);
             int idxPart;
             for (int i=0;i<k;++i){
                 List<Integer> part = new ArrayList<>();
@@ -97,7 +98,7 @@ public class ReducedIPModel extends AbstractModel {
                         part.add(j);
                     }
                 }
-                this.partitionList.add(part);
+                this.bestPartitions.add(part);
             }
         }
     }
