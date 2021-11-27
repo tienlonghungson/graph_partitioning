@@ -6,10 +6,19 @@ import io.ListEdgeBasedInput;
 import java.io.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractModel {
-    // resulted partition
-    protected List<List<Integer>> partitionList ;
+    /**
+     * time limit in minute
+     */
+    protected final int TIME_LIMIT = 20;
+    /**
+     * result partitions
+     */
+    protected List<List<Integer>> bestPartitions;
 
     /**
      * weight of the solution found
@@ -26,9 +35,23 @@ public abstract class AbstractModel {
      */
     protected String status;
 
+    /**
+     * used to set time limit for solving
+     */
+    protected boolean isTimeUp;
+
+    /**
+     * set timer
+     */
+    ScheduledExecutorService timer;
+
     protected int nRun;
 
+    /**
+     * interface to read input
+     */
     protected InputInterface inputInterface;
+    protected int k, alpha;
 
     protected String modelName;
 
@@ -62,7 +85,7 @@ public abstract class AbstractModel {
      * write result of each run to specified files
      * @param filename (recommended including _x.txt , x is the ith run (if nRun >1) )
      * @param k number of partitions
-     * @param alpha bound of different of each partition
+     * @param alpha bound difference among partitions
      * @param runIdx the index of this run
      * @param delimiter the separate character between content
      */
@@ -78,7 +101,7 @@ public abstract class AbstractModel {
             printWriter.printf("%2s\"partitions\": {\n", "");
 
             int i=0; String deli="";
-            for (List<Integer> parti : this.partitionList){
+            for (List<Integer> parti : this.bestPartitions){
                 printWriter.printf("%s%4s\"%d\": %s\n", deli, "", i++, parti.toString());
                 deli=",";
             }
@@ -86,7 +109,7 @@ public abstract class AbstractModel {
             printWriter.printf("%2s}\n",""); // close bracket for partition field
             printWriter.printf("}\n"); // cloe bracket for this object
             printWriter.close();
-            partitionList.clear(); // clear to store result of new run(if nRun > 1)
+            bestPartitions.clear(); // clear to store result of new run(if nRun > 1)
         } catch (FileNotFoundException fileNotFoundException){
             System.out.println(fileNotFoundException.getMessage());
             fileNotFoundException.printStackTrace();
@@ -98,7 +121,7 @@ public abstract class AbstractModel {
      * @param filename (recommended csv file)
      * @param dataName name of input Data
      * @param k number of partitions
-     * @param alpha bound of different of each partition
+     * @param alpha bound of difference among partitions
      * @param runIdx the index of this run
      */
     protected void writeLog(String filename, String dataName, int k, int alpha, int runIdx){
@@ -117,7 +140,7 @@ public abstract class AbstractModel {
     /**
      * implement a specific algorithm
      * @param k number of partitions
-     * @param alpha bound of different of each partition
+     * @param alpha bound of difference among partitions
      */
     protected abstract void solve(int k, int alpha);
 
@@ -125,13 +148,27 @@ public abstract class AbstractModel {
      * prepare to solve, start timing
      * @param dataName name of input
      * @param k number of partitions
-     * @param alpha bound of different of each partition
+     * @param alpha bound of difference among partitions
      */
     protected void run(String dataName, int k, int alpha){
         System.out.printf("Start Solving %s with k=%d, alpha=%d",dataName,k,alpha);
+
+        timer = Executors.newSingleThreadScheduledExecutor();
+        timer.schedule(new Timer(this), TIME_LIMIT, TimeUnit.MINUTES);
+
         this.timeElapse = System.currentTimeMillis();
         this.solve(k,alpha);
         this.timeElapse = System.currentTimeMillis()- this.timeElapse;
+
+        stop();
+    }
+
+    /**
+     * stop timer
+     */
+    protected void stop(){
+        timer.shutdownNow();
+        isTimeUp = true;
     }
 
 
