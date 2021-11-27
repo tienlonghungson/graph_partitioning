@@ -1,6 +1,6 @@
 package io;
 
-import basic.Triplet;
+import service.Triplet;
 
 import java.io.*;
 import java.util.*;
