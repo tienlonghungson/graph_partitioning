@@ -1,14 +1,14 @@
 package model.integerprogramming;
 
-import model.AbstractModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.ortools.linearsolver.MPConstraint;
 import com.google.ortools.linearsolver.MPObjective;
 import com.google.ortools.linearsolver.MPSolver;
 import com.google.ortools.linearsolver.MPVariable;
+import model.AbstractModel;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class IPModel extends AbstractModel {
 
@@ -56,8 +56,8 @@ public class IPModel extends AbstractModel {
         }
 
         // constraint (3): the consistency of x(i,j)
-        for (int i=0;i<numVertices;i++){
-            for (int j=0;j<numVertices;j++){
+        for (int i=0;i<numVertices-1;i++){
+            for (int j=i+1;j<numVertices;j++){
                 for(int l=numVertices;l<numVar1Dim;l++){
                     MPConstraint mpConstraint3 = solver.makeConstraint(-1,1,"consistent: "+i+"-"+j);
                     mpConstraint3.setCoefficient(x[i][j],1);
@@ -74,8 +74,8 @@ public class IPModel extends AbstractModel {
 
         // set up objective and calculate total weight of the graph at the same time
         MPObjective objective = solver.objective(); double sumWeight=0;
-        for (int i=0;i<numVertices;++i){
-            for (int j=0;j<numVertices;++j){
+        for (int i=0;i<numVertices-1;++i){
+            for (int j=i+1;j<numVertices;++j){
                 objective.setCoefficient(x[i][j],weightedMatrix.get(i).get(j));
                 sumWeight += weightedMatrix.get(i).get(j);
             }
@@ -84,24 +84,27 @@ public class IPModel extends AbstractModel {
         objective.setMaximization();
         final MPSolver.ResultStatus  resultStatus = solver.solve();
 
-        if (resultStatus==MPSolver.ResultStatus.OPTIMAL || resultStatus == MPSolver.ResultStatus.FEASIBLE){
-            this.status = (resultStatus==MPSolver.ResultStatus.OPTIMAL)?"OPTIMAL":"FEASIBLE";
+        switch (resultStatus){
+            case OPTIMAL -> this.status = "OPTIMAL";
+            case FEASIBLE -> this.status = "FEASIBLE";
+            case INFEASIBLE -> this.status = "INFEASIBLE";
+            default -> this.status="NOT_SOLVED";
+        }
 
-            this.weighted = (sumWeight- objective.value())/2;
+        this.weighted = sumWeight- objective.value();
 
-            this.bestPartitions = new ArrayList<>(k);
-            int idxPart;
-            for (int i=0;i<k;++i){
-                List<Integer> part = new ArrayList<>();
-                idxPart = i+numVertices;
-                for (int j=0;j<numVertices;++j){
-                    if (x[j][idxPart].solutionValue()==1){
-                        part.add(j);
-                    }
+        this.bestPartitions = new ArrayList<>(k);
+        int idxPart;
+        for (int i=0;i<k;++i){
+            List<Integer> part = new ArrayList<>();
+            idxPart = i+numVertices;
+            for (int j=0;j<numVertices;++j){
+                if (x[j][idxPart].solutionValue()==1){
+                    part.add(j);
                 }
-                this.bestPartitions.add(part);
             }
-
+            this.bestPartitions.add(part);
         }
     }
+
 }

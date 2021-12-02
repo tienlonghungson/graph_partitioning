@@ -36,6 +36,10 @@ public abstract class AbstractModel {
     protected String status;
 
     /**
+     * number of violation if the status of solution is INFEASIBLE
+     */
+    protected int violation;
+    /**
      * used to set time limit for solving
      */
     protected boolean isTimeUp;
@@ -82,6 +86,26 @@ public abstract class AbstractModel {
     }
 
     /**
+     * setup result file
+     * if start a new file, place '[' at head
+     * if end of a file, place ']'
+     * @param filename name of file
+     * @param isAppend set to {@code false} if starts a new file, {@code true} if ends a file
+     */
+    protected void setupResultFile(String filename,boolean isAppend){
+        char bracket = isAppend?']':'[';
+        try {
+            System.out.println("Setting up file "+filename);
+            PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename,isAppend)));
+            printWriter.printf("%c",bracket);
+            printWriter.close();
+        } catch (FileNotFoundException fileNotFoundException){
+            System.out.println(fileNotFoundException.getMessage());
+            fileNotFoundException.printStackTrace();
+        }
+    }
+
+    /**
      * write result of each run to specified files
      * @param filename (recommended including _x.txt , x is the ith run (if nRun >1) )
      * @param k number of partitions
@@ -89,25 +113,26 @@ public abstract class AbstractModel {
      * @param runIdx the index of this run
      * @param delimiter the separate character between content
      */
-    protected void writeResult(String filename, int k, int alpha, int runIdx, String delimiter){
+    protected void writeResult(String filename, int k, int alpha, int runIdx, char delimiter){
         try {
             PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename,true)));
-            printWriter.printf("%s{\n", delimiter);
+            printWriter.printf("%c\n{\n", delimiter);
             printWriter.printf("%2s\"K\": %d,\n", "", k);
             printWriter.printf("%2s\"Alpha\": %d,\n", "", alpha);
             printWriter.printf("%2s\"runIdx\": %d,\n", "", runIdx);
             printWriter.printf("%2s\"weight\": %f,\n", "", this.weighted);
+            printWriter.printf("%2s\"violation\": %d,\n", "", this.violation);
             printWriter.printf("%2s\"timeElapsed\": %f,\n", "", this.timeElapse);
-            printWriter.printf("%2s\"partitions\": {\n", "");
+            printWriter.printf("%2s\"partitions\": {", "");
 
             int i=0; String deli="";
             for (List<Integer> parti : this.bestPartitions){
-                printWriter.printf("%s%4s\"%d\": %s\n", deli, "", i++, parti.toString());
+                printWriter.printf("%s\n%4s\"%d\": %s", deli, "", i++, parti.toString());
                 deli=",";
             }
 
-            printWriter.printf("%2s}\n",""); // close bracket for partition field
-            printWriter.printf("}\n"); // cloe bracket for this object
+            printWriter.printf("\n%2s}\n",""); // close bracket for partition field
+            printWriter.printf("}"); // cloe bracket for this object
             printWriter.close();
             bestPartitions.clear(); // clear to store result of new run(if nRun > 1)
         } catch (FileNotFoundException fileNotFoundException){
@@ -126,10 +151,10 @@ public abstract class AbstractModel {
      */
     protected void writeLog(String filename, String dataName, int k, int alpha, int runIdx){
         try {
-            PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename)));
-            // columns: data, k, alpha, run idx, result, time, status
-            printWriter.printf("%s,%d,%d,%d,%f,%f,%s",
-                    dataName,k,alpha,runIdx,this.weighted,this.timeElapse,this.status);
+            PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename,true)));
+            // columns: data, k, alpha, run idx, result,violation time, status
+            printWriter.printf("%s,%d,%d,%d,%f,%d,%f,%s\n",
+                    dataName,k,alpha,runIdx,this.weighted,this.violation,this.timeElapse,this.status);
             printWriter.close();
         } catch (FileNotFoundException fileNotFoundException){
             System.out.println(fileNotFoundException.getMessage());
@@ -151,7 +176,7 @@ public abstract class AbstractModel {
      * @param alpha bound of difference among partitions
      */
     protected void run(String dataName, int k, int alpha){
-        System.out.printf("Start Solving %s with k=%d, alpha=%d",dataName,k,alpha);
+        System.out.printf("Start Solving %s with k=%d, alpha=%d\n",dataName,k,alpha);
 
         timer = Executors.newSingleThreadScheduledExecutor();
         timer.schedule(new Timer(this), TIME_LIMIT, TimeUnit.MINUTES);
@@ -160,7 +185,23 @@ public abstract class AbstractModel {
         this.solve(k,alpha);
         this.timeElapse = System.currentTimeMillis()- this.timeElapse;
 
+        insightResult();
         stop();
+    }
+
+    /**
+     * check if the status of the solution is INFEASIBLE
+     * if so, calculate the violation
+     */
+    protected void insightResult(){
+        this.violation=0;
+        if (Objects.equals(status, "INFEASIBLE")){
+            for (int i=0;i<k-1;++i){
+                for (int j=i+1;j<k;++j){
+                    this.violation+=(Math.abs(this.bestPartitions.get(i).size()-this.bestPartitions.get(j).size())>alpha)?1:0;
+                }
+            }
+        }
     }
 
     /**
@@ -177,9 +218,9 @@ public abstract class AbstractModel {
     private static final String logFolder="data/log/";
 
     public static void createLogFile(String filename) throws FileNotFoundException {
-        PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename,true)));
+        PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename)));
         // columns: data, k, alpha, run idx, result, time, status
-        printWriter.printf("data,k,alpha,run idx, result,time, status");
+        printWriter.printf("data,k,alpha,run idx,result,violation,time, status\n");
         printWriter.close();
 
     }
@@ -227,24 +268,28 @@ public abstract class AbstractModel {
 
                 try {
                     model.readInput(f);
-                    String delimiter="";
+                    model.setupResultFile(outputFileName.toString(),false);
+                    char delimiter=' ';
                     for (int k : kArray){
                         for (int alpha: alphaArray) {
                             for (int i = 0; i < nRun; ++i) {
 //                                model.setNRun(i+1);
                                 model.run(dataName,k,alpha);
 
-                                model.writeResult(outputFileName.toString(),k,alpha,i,delimiter); delimiter=",";
+                                model.writeResult(outputFileName.toString(),k,alpha,i,delimiter); delimiter=',';
                                 model.writeLog(logFileName.toString(),dataName,k,alpha,i);
                             }
                         }
                     }
-
+                    model.setupResultFile(outputFileName.toString(),true);
                 } catch (IOException ioException){
                     System.out.println("Error when reading data from "+dataName);
                     System.out.println(ioException.getMessage());
                     ioException.printStackTrace();
                 }
+
+                // remove the name of the previous result file , 5 is the length of extension ".json"
+                outputFileName.delete(outputFileName.length()-dataName.length()-5,outputFileName.length());
             }
         }
     }

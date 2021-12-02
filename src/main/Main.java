@@ -11,7 +11,7 @@ public class Main {
         com.google.ortools.Loader.loadNativeLibraries();
     }
 
-    public static void main(String[] args) throws IOException {
-        AbstractModel.execute(new IPModel(),1,Config.kArray[0], Config.alphaArray[1],"test");
+    public static void main(String[] args){
+        AbstractModel.execute(new IPModel(),1,Config.kArray[0], Config.alphaArray[0],"test");
     }
 }
