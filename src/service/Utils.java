@@ -43,6 +43,17 @@ public class Utils {
             partCost[i]/=2;
             inCost[numVer+1] -= partCost[i];
         }
+
+        double tmp = 0;
+        for (int i=0;i<partitions.size()-1;++i){
+            for (int ver:partitions.get(i)){
+                for (int j = i+1; j < partitions.size(); j++) {
+                    for (int ver2:partitions.get(j)){
+                        tmp+=weightedMatrix.get(ver).get(ver2);
+                    }
+                }
+            }
+        }
         return inCost;
     }
 
@@ -79,18 +90,38 @@ public class Utils {
      * update inCostWeight is called after a vertex changed its partition
      * @param weightedMatrix weight of edges
      * @param inCost inCost array
-     * @param vertex the vertex that changed its partition
+     * @param vertex idx of vertex that changed its partition
      * @param oldPart old partition list
      * @param nextPart new partition list
      */
     public static void updateInCostWeight(List<List<Double>> weightedMatrix,double[] inCost, int vertex,
                                           List<Integer> oldPart, List<Integer> nextPart){
-        int len = inCost.length;
+        // second way to calculate cutWeight
+        double tmp=0;
+        for (int verInOldPart:oldPart){
+            for (int verInNewPart: nextPart) {
+                tmp+=weightedMatrix.get(verInOldPart).get(verInNewPart);
+            }
+        }
+
+        for (int verInOldPart: oldPart){
+
+            // update cutWeight
+            tmp-= weightedMatrix.get(verInOldPart).get(vertex);
+        }
+
+        for (int verInNewPart: nextPart){
+
+            // update cutWeight
+            tmp+= weightedMatrix.get(verInNewPart).get(vertex);
+        }
+
+        final int LAST_IDX = inCost.length-1;
         for (int verInOldPart: oldPart){
             inCost[verInOldPart]-= weightedMatrix.get(verInOldPart).get(vertex);
 
             // update cutWeight
-            inCost[len-1]+= weightedMatrix.get(verInOldPart).get(vertex);
+            inCost[LAST_IDX]+= weightedMatrix.get(verInOldPart).get(vertex);
         }
 
         inCost[vertex]=0;
@@ -99,8 +130,10 @@ public class Utils {
             inCost[vertex]+= weightedMatrix.get(verInNewPart).get(vertex);
 
             // update cutWeight
-            inCost[len-1]-= weightedMatrix.get(verInNewPart).get(vertex);
+            inCost[LAST_IDX]-= weightedMatrix.get(verInNewPart).get(vertex);
         }
+
+
     }
 
 

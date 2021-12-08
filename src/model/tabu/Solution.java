@@ -15,6 +15,7 @@ public class Solution implements Cloneable{
     protected int violation;
     protected int[][] violations;
     protected double obj;
+    private double cutWeight;
 
     public Solution(){}
 
@@ -22,6 +23,7 @@ public class Solution implements Cloneable{
         this.partitions = partitions;
         inCost = Utils.initInCostWeight(weightedMatrix,partitions);
         updateViolation();
+        cutWeight=inCost[inCost.length-1];
     }
 
     public Solution(List<List<Integer>> partitions, double[] inCost,
@@ -41,14 +43,24 @@ public class Solution implements Cloneable{
 
     /**
      * update solution by a new move
-     * @param moveInfo contains information of the move
+     * @param moveInfo contains information of the move. Datatype : a Triplet includes:
+     *                 Triplet includes :
+     *                    Integer: position of moved vertex in partition
+     *                    Integer: idx of source partition
+     *                    Integer: idx of moved vertex
+     *                 Integer : idx of destination partition
+     *                 Double : objective value of new neighbor solution
      */
     protected void update(Triplet<Triplet<Integer,Integer,Integer>,Integer, Double> moveInfo){
         moveVertexToNewPart(moveInfo.first().first(),
                 partitions.get(moveInfo.first().second()),partitions.get(moveInfo.second()));
         obj = moveInfo.third();
+//        Utils.updateInCostWeight(weightedMatrix,inCost,
+//                partitions.get(moveInfo.first().second()).get(moveInfo.first().first()),
+//                partitions.get(moveInfo.first().second()),
+//                partitions.get(moveInfo.second()));
         Utils.updateInCostWeight(weightedMatrix,inCost,
-                partitions.get(moveInfo.first().second()).get(moveInfo.first().first()),
+                moveInfo.first().third(),
                 partitions.get(moveInfo.first().second()),
                 partitions.get(moveInfo.second()));
         updateViolation();
@@ -70,7 +82,8 @@ public class Solution implements Cloneable{
             violations[i]= new int[k-(i+1)];
             for (int j=i+1;j<k;++j){
                 violations[i][j-(i+1)]=partitions.get(i).size()-partitions.get(j).size();
-                numViolation+= (Math.abs(violations[i][j-(i+1)])<=alpha)?0:1;
+//                numViolation+= (Math.abs(violations[i][j-(i+1)])<=alpha)?0:1;
+                numViolation += Math.max(Math.abs(violations[i][j-(i+1)])-alpha,0);
             }
         }
         return new Pair<>(numViolation,violations);
@@ -80,6 +93,17 @@ public class Solution implements Cloneable{
         return cutWeight+W*violation;
     }
 
+    /**
+     * find the best neighbor
+     * @param tabu array of tabu
+     * @return update info Triplet includes:
+     *      Triplet includes :
+     *          Integer: position of moved vertex in partition
+     *          Integer: idx of source partition
+     *          Integer: idx of moved vertex
+     *       Integer : idx of destination partition
+     *       Double : objective value of new neighbor solution
+     */
     protected Triplet<Triplet<Integer,Integer,Integer>,Integer,Double> findBestNeighbor(int[] tabu){
         int selectVerIdx=-1;
         int selectVerPosInPart = -1;
@@ -130,7 +154,7 @@ public class Solution implements Cloneable{
     protected void moveVertexToNewPart(int posVer,List<Integer> oldPart, List<Integer> nextPart){
 //        int auxVer = oldPart.get(posVer);?
         Collections.swap(oldPart,posVer,oldPart.size()-1);
-        oldPart.remove(oldPart.size()-1);
+//        oldPart.remove(oldPart.size()-1);
         nextPart.add(oldPart.remove(oldPart.size()-1));
     }
 
@@ -139,6 +163,9 @@ public class Solution implements Cloneable{
         Collections.swap(oldPart,posVer,oldPart.size()-1);
     }
 
+    public String getStatus(){
+        return (violation==0)?"FEASIBLE":"INFEASIBLE";
+    }
 
     @Override
     protected Object clone(){

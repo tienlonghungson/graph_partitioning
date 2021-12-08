@@ -5,7 +5,6 @@ import io.ListEdgeBasedInput;
 
 import java.io.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -180,12 +179,13 @@ public abstract class AbstractModel {
 
         timer = Executors.newSingleThreadScheduledExecutor();
         timer.schedule(new Timer(this), TIME_LIMIT, TimeUnit.MINUTES);
+        isTimeUp=false;
 
         this.timeElapse = System.currentTimeMillis();
         this.solve(k,alpha);
         this.timeElapse = System.currentTimeMillis()- this.timeElapse;
 
-        insightResult();
+        insightResult(k,alpha);
         stop();
     }
 
@@ -193,9 +193,9 @@ public abstract class AbstractModel {
      * check if the status of the solution is INFEASIBLE
      * if so, calculate the violation
      */
-    protected void insightResult(){
+    protected void insightResult(int k, int alpha){
         this.violation=0;
-        if (Objects.equals(status, "INFEASIBLE")){
+        if (status.equals("INFEASIBLE")){
             for (int i=0;i<k-1;++i){
                 for (int j=i+1;j<k;++j){
                     this.violation+=(Math.abs(this.bestPartitions.get(i).size()-this.bestPartitions.get(j).size())>alpha)?1:0;
@@ -257,9 +257,9 @@ public abstract class AbstractModel {
             return;
         }
 
-        for (File f : Objects.requireNonNull(dir.listFiles())) {
-//			File[] files = {new File("data/uniform/W100-H020/NS0050-A0060.txt")};
-//			for (File f: files){
+//        for (File f : Objects.requireNonNull(dir.listFiles())) {
+		File[] files = {new File("data/input/test/data_12_distance.txt")};
+		for (File f: files){
             String dataName;
             if (!f.isDirectory() && (dataName = f.getName()).endsWith(".txt")) {
                 dataName = dataName.substring(0, dataName.lastIndexOf(".txt")); // remove postfix .txt

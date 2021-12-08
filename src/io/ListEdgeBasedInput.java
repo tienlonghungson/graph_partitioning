@@ -51,8 +51,8 @@ public class ListEdgeBasedInput implements InputInterface{
 
     @Override
     public List<List<Double>> getWeightedMatrix() {
-        List<List<Double>> weightedMatrix = new ArrayList<>(NUM_VERTICES+1);
-        double[][] matrix = new double[NUM_VERTICES+1][NUM_VERTICES+1];
+        List<List<Double>> weightedMatrix = new ArrayList<>(NUM_VERTICES);
+        double[][] matrix = new double[NUM_VERTICES][NUM_VERTICES];
         int firstVer, secVer;
         for (Triplet<Integer,Integer,Double> row: listEdges) {
             firstVer = row.first();
