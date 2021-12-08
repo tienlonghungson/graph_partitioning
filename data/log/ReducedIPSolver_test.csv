@@ -1,7 +1,0 @@
-data,k,alpha,run idx,result,violation,time, status
-data_12_distance,2,1,0,1553.000000,0,532.000000,OPTIMAL
-data_12_distance,2,2,0,1484.000000,0,440.000000,OPTIMAL
-data_15_distance,2,1,0,1903.000000,0,1544.000000,OPTIMAL
-data_15_distance,2,2,0,1903.000000,0,1403.000000,OPTIMAL
-data_20_distance,2,1,0,4144.000000,0,24947.000000,OPTIMAL
-data_20_distance,2,2,0,4085.000000,0,30965.000000,OPTIMAL
