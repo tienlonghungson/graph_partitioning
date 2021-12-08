@@ -5,6 +5,7 @@ import io.ListEdgeBasedInput;
 
 import java.io.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -257,9 +258,9 @@ public abstract class AbstractModel {
             return;
         }
 
-//        for (File f : Objects.requireNonNull(dir.listFiles())) {
-		File[] files = {new File("data/input/test/data_12_distance.txt")};
-		for (File f: files){
+        for (File f : Objects.requireNonNull(dir.listFiles())) {
+//		File[] files = {new File("data/input/test/data_12_distance.txt")};
+//		for (File f: files){
             String dataName;
             if (!f.isDirectory() && (dataName = f.getName()).endsWith(".txt")) {
                 dataName = dataName.substring(0, dataName.lastIndexOf(".txt")); // remove postfix .txt
