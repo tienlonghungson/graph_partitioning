@@ -1,6 +1,5 @@
 package model.constraintprogramming;
 
-import com.google.ortools.linearsolver.MPConstraint;
 import com.google.ortools.sat.*;
 import model.AbstractModel;
 
@@ -67,7 +66,9 @@ public class CPModel extends AbstractModel {
 
         cpModel.maximize(LinearExpr.scalProd(xFlatten,weightedMatrixFlatten));
         CpSolver solver = new CpSolver();
+        solver.getParameters().setMaxTimeInSeconds(TIME_LIMIT_IN_MINUTE *60);
         CpSolverStatus resultStatus = solver.solve(cpModel);
+
 
         switch (resultStatus){
             case OPTIMAL -> this.status = "OPTIMAL";

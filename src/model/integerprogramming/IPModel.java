@@ -8,7 +8,6 @@ import model.AbstractModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class IPModel extends AbstractModel {
 
@@ -27,7 +26,7 @@ public class IPModel extends AbstractModel {
             System.out.println("Could not create solver SCIP");
             return;
         }
-        solver.setTimeLimit(TIME_LIMIT*60000);
+        solver.setTimeLimit(TIME_LIMIT_IN_MINUTE *60000);
 
         MPVariable[][] x = new MPVariable[numVertices][numVar1Dim];
         for (int i=0;i<numVertices;++i){
