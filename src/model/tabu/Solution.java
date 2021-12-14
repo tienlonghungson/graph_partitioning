@@ -4,6 +4,7 @@ import service.Pair;
 import service.Triplet;
 import service.Utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,15 +16,11 @@ public class Solution implements Cloneable{
     protected int violation;
     protected int[][] violations;
     protected double obj;
-    private double cutWeight;
-
-    public Solution(){}
 
     public Solution(List<List<Integer>> partitions){
         this.partitions = partitions;
         inCost = Utils.initInCostWeight(weightedMatrix,partitions);
         updateViolation();
-        cutWeight=inCost[inCost.length-1];
     }
 
     public Solution(List<List<Integer>> partitions, double[] inCost,
@@ -163,19 +160,32 @@ public class Solution implements Cloneable{
         Collections.swap(oldPart,posVer,oldPart.size()-1);
     }
 
+    public double getCutWeight(){
+        return this.inCost[1];
+    }
+
     public String getStatus(){
         return (violation==0)?"FEASIBLE":"INFEASIBLE";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Object clone(){
         Solution cloned;
         try {
             cloned = (Solution) super.clone();
-        } catch (CloneNotSupportedException cloneNotSupportedException){
-            cloned = new Solution(List.copyOf(this.partitions));
+        } catch (CloneNotSupportedException e){
+            // this shouldn't happen, since we are Cloneable
+            System.out.println("Error When Cloning");
+            throw new InternalError(e);
         }
-        Collections.copy(cloned.partitions,this.partitions);
+
+//        Collections.copy(cloned.partitions,this.partitions);
+        cloned.partitions = new ArrayList<>(this.partitions.size());
+        for (int i=0;i<partitions.size();++i){
+            cloned.partitions.add((List<Integer>) ((ArrayList<Integer>) this.partitions.get(i)).clone());
+        }
+//        Collections.copy(cloned.partitions,this.partitions);
         cloned.inCost = this.inCost.clone();
         cloned.violations= new int[this.violations.length][];
         for (int i=0;i<this.violations.length;++i){

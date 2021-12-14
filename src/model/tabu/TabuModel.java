@@ -8,17 +8,12 @@ import service.Utils;
 import java.util.*;
 
 public class TabuModel extends AbstractModel {
-    private static final int[] ITERATION= new int[]{100,200,300};
+//    private static final int[] ITERATION= new int[]{100,200,300};
     private static int NUM_GENERATION;
 
     private static void setNumGeneration(int numVer){
-        if (numVer<=35) {
-            NUM_GENERATION=ITERATION[0];
-        } else if (numVer<=70){
-            NUM_GENERATION=ITERATION[1];
-        } else {
-            NUM_GENERATION=ITERATION[2];
-        }
+        final int factor = numVer/36;
+        NUM_GENERATION = (factor+1)*100;
     }
 
 //    private List<List<Double>> weightedMatrix;
@@ -95,6 +90,13 @@ public class TabuModel extends AbstractModel {
 
             oldObj=currSol.obj;
             Triplet<Triplet<Integer,Integer,Integer>,Integer,Double> moveToNext = currSol.findBestNeighbor(tabu);
+            if (moveToNext.first().first()==-1||
+                moveToNext.first().second()==-1||
+                moveToNext.first().third()==-1||
+                moveToNext.second()==-1){
+                currSol = genSolution();
+                continue;
+            }
             currSol.update(moveToNext);
 
             for (int i = 0; i< tabu.length; ++i){
@@ -122,6 +124,6 @@ public class TabuModel extends AbstractModel {
         // return result
         this.bestPartitions = bestSol.partitions;
         this.status = this.bestSol.getStatus();
-        this.weighted = bestSol.obj;
+        this.weighted = bestSol.getCutWeight();
     }
 }
