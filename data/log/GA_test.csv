@@ -1,0 +1,7 @@
+data,k,alpha,run idx,result,violation,time, status
+data_12_distance,2,1,0,1588.000000,0,267.000000,FEASIBLE
+data_12_distance,2,2,0,1496.000000,0,116.000000,FEASIBLE
+data_15_distance,2,1,0,1957.000000,0,82.000000,FEASIBLE
+data_15_distance,2,2,0,1982.000000,0,85.000000,FEASIBLE
+data_20_distance,2,1,0,4355.000000,0,98.000000,FEASIBLE
+data_20_distance,2,2,0,4153.000000,0,111.000000,FEASIBLE

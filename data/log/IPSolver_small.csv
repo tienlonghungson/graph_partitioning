@@ -1,0 +1,4 @@
+data,k,alpha,run idx,result,violation,time, status
+dense_10,2,1,0,1314.418992,0,908.000000,OPTIMAL
+dense_10,2,2,0,1262.515724,0,426.000000,OPTIMAL
+dense_15,2,1,0,3008.096229,0,3818.000000,FEASIBLE
