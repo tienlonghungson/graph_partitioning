@@ -1,6 +1,5 @@
 package model.tabu;
 
-import service.Pair;
 import service.Triplet;
 import service.Utils;
 
@@ -14,7 +13,6 @@ public class Solution implements Cloneable{
     protected List<List<Integer>> partitions;
     protected double[] inCost;
     protected int violation;
-//    protected int[][] violations;
     protected double obj;
 
     public Solution(List<List<Integer>> partitions){
@@ -28,14 +26,10 @@ public class Solution implements Cloneable{
         this(partitions);
         this.inCost = inCost;
         this.violation=violation;
-//        this.violations=violations;
         this.obj=obj;
     }
     
     protected void updateViolation(){
-//        Pair<Integer,int[][]> pair= calViolation(partitions,k,alpha);
-//        violation = pair.first();
-//        violations= pair.second();
         violation = calViolation(partitions,k,alpha);
         obj = calObjective(inCost[inCost.length-1], violation);
     }
@@ -54,10 +48,6 @@ public class Solution implements Cloneable{
         moveVertexToNewPart(moveInfo.first().first(),
                 partitions.get(moveInfo.first().second()),partitions.get(moveInfo.second()));
         obj = moveInfo.third();
-//        Utils.updateInCostWeight(weightedMatrix,inCost,
-//                partitions.get(moveInfo.first().second()).get(moveInfo.first().first()),
-//                partitions.get(moveInfo.first().second()),
-//                partitions.get(moveInfo.second()));
         Utils.updateInCostWeight(weightedMatrix,inCost,
                 moveInfo.first().third(),
                 partitions.get(moveInfo.first().second()),
@@ -65,28 +55,6 @@ public class Solution implements Cloneable{
         updateViolation();
     }
 
-//    /**
-////     * calculate violation array and number of violation
-////     * @param partitions partitions list
-////     * @param k number of partitions
-////     * @param alpha bound of difference among partitions
-////     * @return a Pair:
-////     *              Integer : number of violations
-////     *              int[] : violation array
-////     */
-//    protected Pair<Integer,int[][]> calViolation(List<List<Integer>> partitions, int k, int alpha){
-//        int numViolation=0;
-//        int[][] violations = new int[k-1][];
-//        for (int i=0;i<k-1;++i){
-//            violations[i]= new int[k-(i+1)];
-//            for (int j=i+1;j<k;++j){
-//                violations[i][j-(i+1)]=partitions.get(i).size()-partitions.get(j).size();
-////                numViolation+= (Math.abs(violations[i][j-(i+1)])<=alpha)?0:1;
-//                numViolation += Math.max(Math.abs(violations[i][j-(i+1)])-alpha,0);
-//            }
-//        }
-//        return new Pair<>(numViolation,violations);
-//    }
     /**
      * calculate violation array and number of violation
      * @param partitions partitions list
@@ -95,16 +63,7 @@ public class Solution implements Cloneable{
      * @return number of violations
      */
     protected int calViolation(List<List<Integer>> partitions, int k, int alpha){
-        int numViolation=0;
-        int diffIJ;
-        for (int i=0;i<k-1;++i){
-            for (int j=i+1;j<k;++j){
-                diffIJ=partitions.get(i).size()-partitions.get(j).size();
-//                numViolation+= (Math.abs(violations[i][j-(i+1)])<=alpha)?0:1;
-                numViolation += Math.max(Math.abs(diffIJ)-alpha,0);
-            }
-        }
-        return numViolation;
+        return Utils.calViolationBetweenPartitions(partitions,k,alpha);
     }
 
     protected double calObjective(double cutWeight, int violation){
@@ -133,7 +92,6 @@ public class Solution implements Cloneable{
 
         int vertexIdx;
         List<Integer> auxPart;
-//        Pair<Integer,int[][]> auxPair;
         int auxViolation;
         for (int oldPart=0;oldPart<k;++oldPart){
             auxPart = partitions.get(oldPart);
@@ -146,12 +104,10 @@ public class Solution implements Cloneable{
                 for (int nextPart=0;nextPart<k;nextPart++){
                     if(nextPart!=oldPart){
                         moveVertexToNewPart(posVer,partitions.get(oldPart),partitions.get(nextPart));
-//                        auxPair = calViolation(partitions,k,alpha);
                         auxViolation = calViolation(partitions,k,alpha);
                         Utils.updateInCostWeight(weightedMatrix,inCost,vertexIdx,
                                 partitions.get(oldPart),partitions.get(nextPart));
 
-//                        tmpObj = calObjective(inCost[inCost.length-1],auxPair.first());
                         tmpObj = calObjective(inCost[inCost.length-1],auxViolation);
                         if (tmpObj<neighBestObj){
                             neighBestObj=tmpObj;
@@ -173,9 +129,7 @@ public class Solution implements Cloneable{
     }
 
     protected void moveVertexToNewPart(int posVer,List<Integer> oldPart, List<Integer> nextPart){
-//        int auxVer = oldPart.get(posVer);?
         Collections.swap(oldPart,posVer,oldPart.size()-1);
-//        oldPart.remove(oldPart.size()-1);
         nextPart.add(oldPart.remove(oldPart.size()-1));
     }
 
@@ -204,17 +158,12 @@ public class Solution implements Cloneable{
             throw new InternalError(e);
         }
 
-//        Collections.copy(cloned.partitions,this.partitions);
         cloned.partitions = new ArrayList<>(this.partitions.size());
         for (int i=0;i<partitions.size();++i){
             cloned.partitions.add((List<Integer>) ((ArrayList<Integer>) this.partitions.get(i)).clone());
         }
-//        Collections.copy(cloned.partitions,this.partitions);
+
         cloned.inCost = this.inCost.clone();
-//        cloned.violations= new int[this.violations.length][];
-//        for (int i=0;i<this.violations.length;++i){
-//            cloned.violations[i] = this.violations[i].clone();
-//        }
         return cloned;
     }
 }

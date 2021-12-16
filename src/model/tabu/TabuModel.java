@@ -1,14 +1,11 @@
 package model.tabu;
 
 import model.AbstractModel;
-import service.Pair;
 import service.Triplet;
-import service.Utils;
 
 import java.util.*;
 
 public class TabuModel extends AbstractModel {
-//    private static final int[] ITERATION= new int[]{100,200,300};
     private static int NUM_GENERATION;
 
     private static void setNumGeneration(int numVer){
@@ -16,10 +13,8 @@ public class TabuModel extends AbstractModel {
         NUM_GENERATION = (factor+1)*100;
     }
 
-//    private List<List<Double>> weightedMatrix;
     private int numVer;
 
-//    private final int TB_MIN=2, TB_MAX=5;
     private int tbl=3;
 
     Solution currSol, bestSol, lastImprovedSol;
@@ -118,7 +113,6 @@ public class TabuModel extends AbstractModel {
                     tbl++;
                 }
             }
-//            System.out.println("iteration="+it);
         }
 
         // return result
