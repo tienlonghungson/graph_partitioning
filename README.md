@@ -5,10 +5,11 @@
 
 ## Solver
 - Integer Programming (by ortools)
-- Constraint Programming (by ortools) (working on it)
-- Heuristic (working on it) (Tabu search, GA, NSGA)
+- Constraint Programming (by ortools) (just like IP, difference in implementation)
+- Heuristic (Tabu search, GA)
+- NSGA2(raw implementation, bad performance)
 
 ## Requirement :
-- SDK 17 (but 8 might be enough, I haven't test)
+- SDK 17 (at least 14 because I've used Record)
 - google.ortools.java
 
