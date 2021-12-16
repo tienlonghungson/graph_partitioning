@@ -27,64 +27,24 @@ public class Utils {
      * 2 last elements respectively are totalWeight and cutWeight
      */
     public static double[] initInCostWeight(List<List<Double>> weightedMatrix, List<List<Integer>> partitions){
-        int numVer = weightedMatrix.size();
-        double[] inCost = new double[numVer+2];
-        double[] partCost = new double[partitions.size()];
+        double[] inCost = new double[2];
+        double partCost;
         double totalWeight = calTotalWeight(weightedMatrix);
-        inCost[numVer] = inCost[numVer+1]= totalWeight;
+        inCost[0] = inCost[1]= totalWeight;
 
-        for (int i=0;i< partitions.size();++i){
-            for (int start: partitions.get(i)){
-                for (int des: partitions.get(i)){
-                    inCost[start]+= weightedMatrix.get(start).get(des);
-                }
-                partCost[i]+=inCost[start];
-            }
-            partCost[i]/=2;
-            inCost[numVer+1] -= partCost[i];
-        }
-
-        double tmp = 0;
-        for (int i=0;i<partitions.size()-1;++i){
-            for (int ver:partitions.get(i)){
-                for (int j = i+1; j < partitions.size(); j++) {
-                    for (int ver2:partitions.get(j)){
-                        tmp+=weightedMatrix.get(ver).get(ver2);
-                    }
+        for (List<Integer> partition : partitions) {
+            partCost = 0;
+            for (int start : partition) {
+                for (int des : partition) {
+                    partCost += weightedMatrix.get(start).get(des);
                 }
             }
+            partCost /= 2;
+            inCost[1] -= partCost;
         }
         return inCost;
     }
 
-    /**
-     * update inCostWeight is called after a vertex changed its partition
-     * @param weightedMatrix weight of edges
-     * @param inCost inCost array
-     * @param vertex the vertex that changed its partition
-     * @param oldPart index of its old partition
-     * @param newPart index of its new partition
-     * @param partitions list of partitions ( required to be updated first)
-     */
-    public static void updateInCostWeight(List<List<Double>> weightedMatrix,double[] inCost, int vertex,
-                                              int oldPart, int newPart, List<List<Integer>> partitions){
-        int len = inCost.length;
-        for (int verInOldPart: partitions.get(oldPart)){
-            inCost[verInOldPart]-= weightedMatrix.get(verInOldPart).get(vertex);
-
-            // update cutWeight
-            inCost[len-1]+= weightedMatrix.get(verInOldPart).get(vertex);
-        }
-
-        inCost[vertex]=0;
-        for (int verInNewPart: partitions.get(newPart)){
-            inCost[verInNewPart] +=  weightedMatrix.get(verInNewPart).get(vertex);
-            inCost[vertex]+= weightedMatrix.get(verInNewPart).get(vertex);
-
-            // update cutWeight
-            inCost[len-1]-= weightedMatrix.get(verInNewPart).get(vertex);
-        }
-    }
 
     /**
      * update inCostWeight is called after a vertex changed its partition
@@ -96,77 +56,55 @@ public class Utils {
      */
     public static void updateInCostWeight(List<List<Double>> weightedMatrix,double[] inCost, int vertex,
                                           List<Integer> oldPart, List<Integer> nextPart){
-        // second way to calculate cutWeight
-        double tmp=0;
-        for (int verInOldPart:oldPart){
-            for (int verInNewPart: nextPart) {
-                tmp+=weightedMatrix.get(verInOldPart).get(verInNewPart);
-            }
-        }
-
-        for (int verInOldPart: oldPart){
-
-            // update cutWeight
-            tmp-= weightedMatrix.get(verInOldPart).get(vertex);
-        }
-
-        for (int verInNewPart: nextPart){
-
-            // update cutWeight
-            tmp+= weightedMatrix.get(verInNewPart).get(vertex);
-        }
-
         final int LAST_IDX = inCost.length-1;
         for (int verInOldPart: oldPart){
-            inCost[verInOldPart]-= weightedMatrix.get(verInOldPart).get(vertex);
-
             // update cutWeight
             inCost[LAST_IDX]+= weightedMatrix.get(verInOldPart).get(vertex);
         }
 
-        inCost[vertex]=0;
         for (int verInNewPart: nextPart){
-            inCost[verInNewPart] +=  weightedMatrix.get(verInNewPart).get(vertex);
-            inCost[vertex]+= weightedMatrix.get(verInNewPart).get(vertex);
-
-            // update cutWeight
+           // update cutWeight
             inCost[LAST_IDX]-= weightedMatrix.get(verInNewPart).get(vertex);
         }
 
-
     }
-
 
     /**
-     * calculate the totalWeight and cutWeight
-     * @param weightedMatrix weight of edges
+     * calculate violation between partitions
+     * if the different between 2 partitions exceeds alpha, the violation = different - alpha
      * @param partitions list of partitions
-     * @param vertices array of vertices object
-     * @return the cost array with information storing at 2 elements
-     * 2 elements respectively are totalWeight and cutWeight
+     * @param nParts number of partitions
+     * @param alpha boundary of different between partitions
+     * @return sum of (different - alpha) (if different >alpha)
      */
-    public static double[] initInCostWeight(List<List<Double>> weightedMatrix,
-                                            List<List<Integer>> partitions, Vertex[] vertices){
-        int numVer = vertices.length;
-        double[] cost = new double[2]; // cost[0] is totalWeight, cost[1] is cutWeight
-
-        double tmpWeight;
-        for(int i=0;i<numVer-1;++i){
-            for (int j=i+1;j<numVer;++j){
-                tmpWeight = weightedMatrix.get(i).get(j);
-
-                if (vertices[i].partIdx==vertices[j].partIdx){ // if i and j are on the same partition
-                    vertices[i].inCost+=tmpWeight;
-                    vertices[j].inCost+=tmpWeight;
-                } else {
-                    cost[1]+=tmpWeight; // i and j aren't on the same partition, we update the cutWeight
-                }
-                cost[0]+=tmpWeight;
+    public static int calViolationBetweenPartitions(List<List<Integer>> partitions, int nParts, int alpha){
+        int numViolation=0;
+        int diffIJ;
+        for (int i=0;i<nParts-1;++i){
+            for (int j=i+1;j<nParts;++j){
+                diffIJ=partitions.get(i).size()-partitions.get(j).size();
+                numViolation += Math.max(Math.abs(diffIJ)-alpha,0);
             }
         }
-
-        return cost;
+        return numViolation;
     }
 
+    /**
+     * calculate the violation of the whole partitions
+     * if the different between 2 partitions exceeds alpha, the number of violation increase 1
+     * @param partitions partitions list
+     * @param nPart number of partitions
+     * @param alpha boundary of different between partitions
+     * @return number of violation
+     */
+    public static int calViolationOfWholePartitions(List<List<Integer>> partitions, int nPart, int alpha){
+        int numViolation=0;
+        for (int i=0;i<nPart-1;++i){
+            for (int j=i+1;j<nPart;++j){
+                numViolation+=(Math.abs(partitions.get(i).size()-partitions.get(j).size())>alpha)?1:0;
+            }
+        }
+        return numViolation;
+    }
 
 }
