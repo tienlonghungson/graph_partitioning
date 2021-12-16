@@ -65,17 +65,4 @@ public class ListEdgeBasedInput implements InputInterface{
         return Collections.unmodifiableList(weightedMatrix);
     }
 
-    public static void main(String[] args){
-        try {
-            ListEdgeBasedInput listEdgeBasedInput = new ListEdgeBasedInput("src/io/test.txt");
-            for (List<Double> row:
-                 listEdgeBasedInput.getWeightedMatrix()) {
-                System.out.println(row);
-            }
-        } catch (IOException ioException){
-            System.out.println("Error when reading files");
-            ioException.printStackTrace();
-            System.out.println(ioException.getMessage());
-        }
-    }
 }
