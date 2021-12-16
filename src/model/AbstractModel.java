@@ -2,6 +2,7 @@ package model;
 
 import io.InputInterface;
 import io.ListEdgeBasedInput;
+import service.Utils;
 
 import java.io.*;
 import java.util.List;
@@ -14,7 +15,7 @@ public abstract class AbstractModel {
     /**
      * time limit in minute
      */
-    protected final int TIME_LIMIT = 20;
+    protected final int TIME_LIMIT_IN_MINUTE = 20;
     /**
      * result partitions
      */
@@ -49,13 +50,19 @@ public abstract class AbstractModel {
      */
     ScheduledExecutorService timer;
 
-    protected int nRun;
-
     /**
      * interface to read input
      */
     protected InputInterface inputInterface;
-    protected int k, alpha;
+    /**
+     * number of partitions
+     */
+    protected int k;
+
+    /**
+     * boundary of different between partitions
+     */
+    protected int alpha;
 
     protected String modelName;
 
@@ -63,9 +70,6 @@ public abstract class AbstractModel {
         return modelName;
     }
 
-    public void setNRun(int nRun) {
-        this.nRun = nRun;
-    }
 
     /**
      * read input data from file
@@ -179,7 +183,7 @@ public abstract class AbstractModel {
         System.out.printf("Start Solving %s with k=%d, alpha=%d\n",dataName,k,alpha);
 
         timer = Executors.newSingleThreadScheduledExecutor();
-        timer.schedule(new Timer(this), TIME_LIMIT, TimeUnit.MINUTES);
+        timer.schedule(new Timer(this), TIME_LIMIT_IN_MINUTE, TimeUnit.MINUTES);
         isTimeUp=false;
 
         this.timeElapse = System.currentTimeMillis();
@@ -197,11 +201,7 @@ public abstract class AbstractModel {
     protected void insightResult(int k, int alpha){
         this.violation=0;
         if (status.equals("INFEASIBLE")){
-            for (int i=0;i<k-1;++i){
-                for (int j=i+1;j<k;++j){
-                    this.violation+=(Math.abs(this.bestPartitions.get(i).size()-this.bestPartitions.get(j).size())>alpha)?1:0;
-                }
-            }
+            this.violation= Utils.calViolationOfWholePartitions(this.bestPartitions,k,alpha);
         }
     }
 
@@ -265,7 +265,6 @@ public abstract class AbstractModel {
             if (!f.isDirectory() && (dataName = f.getName()).endsWith(".txt")) {
                 dataName = dataName.substring(0, dataName.lastIndexOf(".txt")); // remove postfix .txt
                 outputFileName.append(dataName).append(".json");
-//                int lenResultName = outputFileName.length();
 
                 try {
                     model.readInput(f);
@@ -274,7 +273,6 @@ public abstract class AbstractModel {
                     for (int k : kArray){
                         for (int alpha: alphaArray) {
                             for (int i = 0; i < nRun; ++i) {
-//                                model.setNRun(i+1);
                                 model.run(dataName,k,alpha);
 
                                 model.writeResult(outputFileName.toString(),k,alpha,i,delimiter); delimiter=',';
