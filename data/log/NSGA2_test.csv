@@ -1,3 +1,0 @@
-data,k,alpha,run idx,result,violation,time, status
-data_12_distance,2,1,0,2106.000000,1,114.000000,INFEASIBLE
-data_12_distance,2,2,0,577.000000,0,38.000000,FEASIBLE

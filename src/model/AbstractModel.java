@@ -15,7 +15,7 @@ public abstract class AbstractModel {
     /**
      * time limit in minute
      */
-    protected final int TIME_LIMIT_IN_MINUTE = 20;
+    protected final int TIME_LIMIT_IN_MINUTE = 30;
     /**
      * result partitions
      */

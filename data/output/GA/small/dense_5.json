@@ -1,0 +1,391 @@
+[ 
+{
+  "K": 2,
+  "Alpha": 1,
+  "runIdx": 0,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 1,
+  "runIdx": 1,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 1,
+  "runIdx": 2,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 1,
+  "runIdx": 3,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 1,
+  "runIdx": 4,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 2,
+  "runIdx": 0,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 2,
+  "runIdx": 1,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 2,
+  "runIdx": 2,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 10.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 2,
+  "runIdx": 3,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 2,
+  "runIdx": 4,
+  "weight": 271.278458,
+  "violation": 0,
+  "timeElapsed": 10.000000,
+  "partitions": {
+    "0": [0, 2],
+    "1": [1, 3, 4]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 1,
+  "runIdx": 0,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [2],
+    "1": [3, 4],
+    "2": [0, 1]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 1,
+  "runIdx": 1,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [2],
+    "1": [0, 1],
+    "2": [3, 4]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 1,
+  "runIdx": 2,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [2],
+    "1": [0, 1],
+    "2": [3, 4]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 1,
+  "runIdx": 3,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [2],
+    "1": [3, 4],
+    "2": [0, 1]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 1,
+  "runIdx": 4,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 10.000000,
+  "partitions": {
+    "0": [0, 1],
+    "1": [2],
+    "2": [3, 4]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 2,
+  "runIdx": 0,
+  "weight": 322.278458,
+  "violation": 0,
+  "timeElapsed": 16.000000,
+  "partitions": {
+    "0": [0],
+    "1": [2],
+    "2": [1, 3, 4]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 2,
+  "runIdx": 1,
+  "weight": 322.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [1, 3, 4],
+    "1": [2],
+    "2": [0]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 2,
+  "runIdx": 2,
+  "weight": 322.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [0],
+    "1": [2],
+    "2": [1, 3, 4]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 2,
+  "runIdx": 3,
+  "weight": 322.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [2],
+    "1": [0],
+    "2": [1, 3, 4]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 2,
+  "runIdx": 4,
+  "weight": 322.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [2],
+    "1": [0],
+    "2": [1, 3, 4]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 1,
+  "runIdx": 0,
+  "weight": 458.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [2],
+    "1": [3, 4],
+    "2": [0],
+    "3": [1]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 1,
+  "runIdx": 1,
+  "weight": 458.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [0],
+    "1": [2],
+    "2": [1],
+    "3": [3, 4]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 1,
+  "runIdx": 2,
+  "weight": 458.278458,
+  "violation": 0,
+  "timeElapsed": 13.000000,
+  "partitions": {
+    "0": [2],
+    "1": [0],
+    "2": [3, 4],
+    "3": [1]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 1,
+  "runIdx": 3,
+  "weight": 458.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [2],
+    "1": [3, 4],
+    "2": [0],
+    "3": [1]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 1,
+  "runIdx": 4,
+  "weight": 458.278458,
+  "violation": 0,
+  "timeElapsed": 13.000000,
+  "partitions": {
+    "0": [2],
+    "1": [0],
+    "2": [1],
+    "3": [3, 4]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 2,
+  "runIdx": 0,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 12.000000,
+  "partitions": {
+    "0": [2],
+    "1": [],
+    "2": [3, 4],
+    "3": [0, 1]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 2,
+  "runIdx": 1,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 14.000000,
+  "partitions": {
+    "0": [3, 4],
+    "1": [0, 1],
+    "2": [2],
+    "3": []
+  }
+},
+{
+  "K": 4,
+  "Alpha": 2,
+  "runIdx": 2,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 14.000000,
+  "partitions": {
+    "0": [2],
+    "1": [3, 4],
+    "2": [],
+    "3": [0, 1]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 2,
+  "runIdx": 3,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 11.000000,
+  "partitions": {
+    "0": [],
+    "1": [3, 4],
+    "2": [2],
+    "3": [0, 1]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 2,
+  "runIdx": 4,
+  "weight": 394.278458,
+  "violation": 0,
+  "timeElapsed": 13.000000,
+  "partitions": {
+    "0": [3, 4],
+    "1": [2],
+    "2": [0, 1],
+    "3": []
+  }
+}]

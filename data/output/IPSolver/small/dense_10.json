@@ -1,0 +1,79 @@
+[ 
+{
+  "K": 2,
+  "Alpha": 1,
+  "runIdx": 0,
+  "weight": 1314.418992,
+  "violation": 0,
+  "timeElapsed": 347.000000,
+  "partitions": {
+    "0": [2, 3, 4, 6, 8],
+    "1": [0, 1, 5, 7, 9]
+  }
+},
+{
+  "K": 2,
+  "Alpha": 2,
+  "runIdx": 0,
+  "weight": 1262.515724,
+  "violation": 0,
+  "timeElapsed": 327.000000,
+  "partitions": {
+    "0": [2, 3, 6, 8],
+    "1": [0, 1, 4, 5, 7, 9]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 1,
+  "runIdx": 0,
+  "weight": 1818.919452,
+  "violation": 0,
+  "timeElapsed": 6042.000000,
+  "partitions": {
+    "0": [0, 1, 7],
+    "1": [4, 5, 8, 9],
+    "2": [2, 3, 6]
+  }
+},
+{
+  "K": 3,
+  "Alpha": 2,
+  "runIdx": 0,
+  "weight": 1778.335314,
+  "violation": 0,
+  "timeElapsed": 7883.000000,
+  "partitions": {
+    "0": [0, 1, 7, 9],
+    "1": [3, 4, 5, 8],
+    "2": [2, 6]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 1,
+  "runIdx": 0,
+  "weight": 2104.666020,
+  "violation": 0,
+  "timeElapsed": 47493.000000,
+  "partitions": {
+    "0": [5, 9],
+    "1": [4, 8],
+    "2": [2, 3, 6],
+    "3": [0, 1, 7]
+  }
+},
+{
+  "K": 4,
+  "Alpha": 2,
+  "runIdx": 0,
+  "weight": 2032.021434,
+  "violation": 0,
+  "timeElapsed": 69920.000000,
+  "partitions": {
+    "0": [0, 2, 7],
+    "1": [6],
+    "2": [1, 4, 9],
+    "3": [3, 5, 8]
+  }
+}]
